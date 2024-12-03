@@ -54,8 +54,8 @@ void print_2d(int* a, int maxnodes) {
 
     int index = 0;
     for (int level = 0; level < height; level++) {
-        int nodes_at_level = 1 << level; // Number of nodes at the current level
-        int spacing = (1 << (height - level)) - 1; // Spacing for proper alignment
+        int nodes_at_level = 1 << level; 
+        int spacing = (1 << (height - level)) - 1; 
 
         // Print leading spaces
         print_whitespace(spacing);
@@ -70,7 +70,7 @@ void print_2d(int* a, int maxnodes) {
             }
 		
         }
-        printf("\n\n"); // Move to the next level
+        printf("\n\n"); 
     }
 }
 //-----------------------------------------------------------------------------
