@@ -12,12 +12,7 @@ static void _inorder(BST T, int* pos, int* a);
 static void _postorder(BST T, int* pos, int* a);
 static void _bfs(BST T, int* pos, int* a, int max);
 static BST _remove(BST T);
-static BST get_right(BST T);
-static BST get_left(BST T);
 static BST _remove_both(BST T);
-static BST NULL_right(BST T);
-static BST NULL_left(BST T);
-
 static BST find_min(BST T);
 static BST find_max(BST T);
 
@@ -198,9 +193,6 @@ int size(BST T)
 // private helper functions, not exported
 //-----------------------------------------------------------------------------
 
-
-
-
 //-----------------------------------------------------------------------------
 // _preorder: helper function for preorder
 //-----------------------------------------------------------------------------
@@ -234,6 +226,14 @@ static void _inorder(BST T, int* pos, int* a)
 //-----------------------------------------------------------------------------
 static void _postorder(BST T, int* pos, int* a)
 {
+
+	if(T == NULL){
+		return;
+	}
+	_postorder(get_LC(T), pos, a);
+	_postorder(get_RC(T), pos, a);
+
+	a[(*pos)++] = T->val;
 	if(T)
 	{
 		_postorder(get_LC(T), pos, a);	// left-child
@@ -265,6 +265,35 @@ static void _bfs(BST T, int* pos, int* a, int max)
         _bfs(get_RC(T), &right, a, max);    // right tree recursive call with left ass pos varible
 	}
 
+	
+		
+		
+
+
+
+	
+
+}
+
+BST bst_rem(BST T, int val) {
+    // Base case: Tree is empty ore value not existing
+    if (T == NULL || is_member(T, val) == false) {
+        printf("Value not existing\n");
+        return T; 
+    }
+    // Search for the node to remove
+    if (val < T->val) {
+        T->LC = bst_rem(T->LC, val);
+    } else if (val > T->val) {
+        T->RC = bst_rem(T->RC, val);
+    } else {
+        // Node found
+        T = _remove(T);
+    }
+
+    return T;
+}
+
 }
 
 
@@ -280,20 +309,19 @@ static BST _remove(BST T) {
         free(T);
         return NULL;
     }
-
     //only right child
     else if (get_LC(T) == NULL) {
         BST temp = get_RC(T);
         free(T);
         return temp;
     }
-
     //only left child
     else if (get_RC(T) == NULL) {
         BST temp = get_LC(T);
         free(T);
         return temp;
     }
+    // Node has two children
 
     //node has two children
     return _remove_both(T);
@@ -309,6 +337,15 @@ static BST _remove_both(BST T) {
 		return NULL;
 
     if (size(get_RC(T)) > size(get_LC(T))) {
+        // Right subtree is bigger: Replace with in-order successor
+        BST replace = find_min(get_RC(T)); // Find smallest in right subtree
+        T->val = replace->val;            // Copy successor's value to T
+        T->RC = bst_rem(T->RC, replace->val); // Remove successor node
+    } else {
+        // Left subtree is bigger: Replace with in-order predecessor
+        BST replace = find_max(get_LC(T)); // Find largest in left subtree
+        T->val = replace->val;            // Copy predecessor's value to T
+        T->LC = bst_rem(T->LC, replace->val); // Remove predecessor node
         // Right subtree is bigger
         BST replace  = find_min(get_RC(T)); 			// Find smallest in right subtree
         T->val = get_val(replace);            			// Copy successor's value to T

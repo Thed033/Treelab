@@ -6,7 +6,7 @@ typedef struct BT{
 	struct BT* LC;
 	struct BT* RC;
 }BT;
-BT* new_BT(int val);
+BT* new_BT(int val); 
 BT* set_val(BT* T, int val);
 BT* set_LC(BT* T, BT* LC);
 BT* set_RC(BT* T, BT* RC);
