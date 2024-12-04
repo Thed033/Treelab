@@ -52,23 +52,33 @@ void print_whitespace(int count) {
 void print_2d(int* a, int maxnodes) {
     int height  = (log2(maxnodes))+1;
 
-    int index = 0;
+    int index = 0; //array positon
+
     for (int level = 0; level < height; level++) {
+
+		// calculate number of nodes at level 
         int nodes_at_level = 1 << level; 
-        int spacing = (1 << (height - level)) - 1; 
+		//calculate number of spaces
+        int spacing = (1 << (height+1 - level)); 
 
         // Print leading spaces
         print_whitespace(spacing);
 
         // Print all nodes at the current level
         for (int i = 0; i < nodes_at_level && index < maxnodes; i++) {
-            printf("%d", a[index++]);
+			
+			//print
+			if (a[index] != X){
+				printf("%d", a[index++]);
+			}
+			else{
+				printf("*");
+				index++;
+			}
             // Print spaces between nodes
             if (i < nodes_at_level - 1) {
-                print_whitespace(spacing * 4 - 1);
-				
+                print_whitespace(spacing*2);	
             }
-		
         }
         printf("\n\n"); 
     }
