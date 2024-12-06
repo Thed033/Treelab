@@ -18,8 +18,8 @@ static BST _remove_both(BST T);
 static BST NULL_right(BST T);
 static BST NULL_left(BST T);
 
-static BST find_min(BST T);
-static BST find_max(BST T);
+BST find_min(BST T);
+BST find_max(BST T);
 
 //-----------------------------------------------------------------------------
 // public functions, exported through bst.h
@@ -308,7 +308,7 @@ static BST _remove_both(BST T) {
     if (T == NULL) 
 		return NULL;
 
-    if (size(get_RC(T)) > size(get_LC(T))) {
+    if (height(get_RC(T)) > height(get_LC(T))) {
         // Right subtree is bigger
         BST replace  = find_min(get_RC(T)); 			// Find smallest in right subtree
         T->val = get_val(replace);            			// Copy successor's value to T
@@ -328,7 +328,7 @@ static BST _remove_both(BST T) {
 // find_min: returns smallest value in BST T
 //-----------------------------------------------------------------------------
 
-static BST find_min(BST T) {
+BST find_min(BST T) {
     while (T->LC != NULL) {
         T = T->LC;
     }
@@ -339,7 +339,7 @@ static BST find_min(BST T) {
 // find_max: returns largest value in BST T
 //-----------------------------------------------------------------------------
 
-static BST find_max(BST T) {
+BST find_max(BST T) {
     while (T->RC != NULL) {
         T = T->RC;
     }

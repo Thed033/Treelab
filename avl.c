@@ -24,8 +24,28 @@ static AVL dlr(AVL T);
 //-----------------------------------------------------------------------------
 AVL avl_add(AVL T, int val)
 {
-	if(DEBUG)printf("avl_add (%d)\n",val);
-	// TODO
+	if(T==NULL)
+		return new_BT(val);
+	
+	if(get_val(T) < val)
+	{
+		set_RC(T,avl_add(get_RC(T), val));
+	}
+	else if(get_val(T) > val)
+	{
+		set_LC(T,avl_add(get_LC(T), val));
+	}
+	else
+	{
+		return T;
+	}
+
+	int balanceVal = getBalance(T);
+
+	if(abs(balanceVal) >= 2){
+		T = balance(T);
+	}
+
 	return T;
 }
 
@@ -37,9 +57,76 @@ AVL avl_add(AVL T, int val)
 //-----------------------------------------------------------------------------
 AVL avl_rem(AVL T, int val)
 {
-	if(DEBUG)printf("avl_rem (%d)\n",val);
-	// TODO
+	if(T==NULL)
+		// node not found
+		return T;
+	
+	if(val > get_val(T))
+	{
+		// traverse right-downward
+		set_RC(T, avl_rem(get_RC(T), val));
+	}
+	else if(val < get_val(T))
+	{
+		// traverse left-downward
+		set_LC(T, avl_rem(get_LC(T), val));
+	}
+	else
+	{
+		// node found
+
+		if(get_LC(T) == NULL && get_RC(T) == NULL)
+		{
+			// node with no child
+			free(T);
+			return NULL;
+		}
+
+		else if(get_LC(T) == NULL || get_RC(T) == NULL)
+		{
+			// node with one child
+			if(get_LC(T) == NULL)
+			{
+				free(get_LC(T));
+				set_LC(T, NULL);
+			}
+			else
+			{
+				free(get_RC(T));
+				set_RC(T, NULL);
+			}
+		}
+		
+		else
+		{
+			// node with both children
+
+			if (height(get_RC(T)) > height(get_LC(T))) {
+       			// Right subtree is bigger
+        		AVL replace  = find_min(get_RC(T)); 				// Find smallest in right subtree
+        		set_val(T, get_val(replace));            			// Copy successor's value to T
+        		avl_rem(get_RC(T), get_val(replace));
+    		} 
+			else 
+			{
+        		// Left subtree is bigger
+        		AVL replace = find_max(get_LC(T)); 					// Find largest in left subtree
+       			set_val(T,get_val(replace));            			// Copy predecessor's value to T
+        		avl_rem(get_LC(T), get_val(replace));
+    		}
+
+		}
+		
+	}
+
+	int balanceVal = getBalance(T);
+	if(abs(balanceVal) > 1){
+		// should only execute one time in recursion
+		T= balance(T);
+	}
+
 	return T;
+
 }
 
 
@@ -50,8 +137,49 @@ AVL avl_rem(AVL T, int val)
 //-----------------------------------------------------------------------------
 AVL balance(AVL T)
 {
-	// TODO
-	return srr(slr(drr(dlr(T))));
+	printf("STARTING BALANCING AT NODE %d!!\n", get_val(T));
+	int root_balance = getBalance(T);
+	if(abs(root_balance) < 2 || T==NULL)
+		return T;
+
+	if(root_balance > 1)
+	{	
+		// tree is left-heavy
+
+		if(getBalance(get_LC(T)) > 0)
+		{
+			// child is left-heavy
+			printf("SRR!\n");
+			T = srr(T);
+		}
+		else
+		{
+			// child is right-heavy
+			printf("DRR!\n");
+			T = drr(T);
+		}
+		
+	}
+	else if(root_balance < -1)
+	{
+		// tree is right-heavy
+		
+		if(getBalance(get_RC(T)) > 0)
+		{
+			// child is left-heavy
+			printf("DLR!\n");
+			T = dlr(T);
+		}
+		else
+		{
+			// child is right-heavy
+			printf("SLR!\n");
+			T = slr(T);
+		}
+
+	}
+	printf("SHOULD BE BALANCED!!!\n");
+	return T;
 }
 
 
@@ -62,36 +190,56 @@ AVL balance(AVL T)
 //----------------------------------------------------------------------------
 
 
+//-----------------------------------------------------------------------------
+// srr: single right rotation
+//-----------------------------------------------------------------------------
 static AVL srr(AVL T)
 {
-	if(DEBUG)printf("srr\n");
-	// TODO
-	return T;
+	AVL temp = get_LC(T);
+	set_LC(T, get_RC(temp));
+	set_RC(temp, T);
+	return temp;
 }
 
 
-
+//-----------------------------------------------------------------------------
+// slr: single left rotation
+//-----------------------------------------------------------------------------
 static AVL slr(AVL T)
 {
-	if(DEBUG)printf("slr\n");
-	// TODO
-	return T;
+	AVL temp = get_RC(T);
+	set_RC(T, get_LC(temp));
+	set_LC(temp, T);
+	return temp;
 }
 
 
-
+//-----------------------------------------------------------------------------
+// drr: double left-right rotation
+//-----------------------------------------------------------------------------
 static AVL drr(AVL T)
 {
-	if(DEBUG)printf("drr\n");
-	// TODO
-	return T;
+	set_LC(T, slr(get_LC(T)));
+	return srr(T);
 }
 
 
-
+//-----------------------------------------------------------------------------
+// drr: double right-left rotation
+//-----------------------------------------------------------------------------
 static AVL dlr(AVL T)
 {
-	if(DEBUG)printf("drr\n");
-	// TODO
-	return T;
+	set_RC(T, srr(get_RC(T)));
+	return slr(T);
 }
+
+
+//-----------------------------------------------------------------------------
+// getBalance: get balance of node
+//-----------------------------------------------------------------------------
+int getBalance(AVL T){
+	//TODO: check edge cases of this badboy
+	return (T == NULL) ? 0 : height(get_LC(T)) - height(get_RC(T));
+}
+
+
