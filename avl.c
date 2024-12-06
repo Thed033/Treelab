@@ -107,14 +107,14 @@ AVL avl_rem(AVL T, int val)
        			// Right subtree is bigger
         		AVL replace  = find_min(get_RC(T)); 				// Find smallest in right subtree
         		set_val(T, get_val(replace));            			// Copy successor's value to T
-        		avl_rem(get_RC(T), get_val(replace));
+        		set_RC(T,avl_rem(get_RC(T), get_val(replace)));
     		} 
 			else 
 			{
         		// Left subtree is bigger
         		AVL replace = find_max(get_LC(T)); 					// Find largest in left subtree
        			set_val(T,get_val(replace));            			// Copy predecessor's value to T
-        		avl_rem(get_LC(T), get_val(replace));
+        		set_LC(T,avl_rem(get_LC(T), get_val(replace)));
     		}
 
 		}
