@@ -139,7 +139,6 @@ AVL avl_rem(AVL T, int val)
 //-----------------------------------------------------------------------------
 AVL balance(AVL T)
 {
-	printf("STARTING BALANCING AT NODE %d!!\n", get_val(T));
 	int root_balance = getBalance(T);
 	if(abs(root_balance) < 2 || T==NULL)
 		return T;
@@ -151,13 +150,11 @@ AVL balance(AVL T)
 		if(getBalance(get_LC(T)) > 0)
 		{
 			// child is left-heavy
-			printf("SRR!\n");
 			T = srr(T);
 		}
 		else
 		{
 			// child is right-heavy
-			printf("DRR!\n");
 			T = drr(T);
 		}
 		
@@ -169,18 +166,15 @@ AVL balance(AVL T)
 		if(getBalance(get_RC(T)) > 0)
 		{
 			// child is left-heavy
-			printf("DLR!\n");
 			T = dlr(T);
 		}
 		else
 		{
 			// child is right-heavy
-			printf("SLR!\n");
 			T = slr(T);
 		}
 
 	}
-	printf("SHOULD BE BALANCED!!!\n");
 	return T;
 }
 
