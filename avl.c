@@ -87,13 +87,15 @@ AVL avl_rem(AVL T, int val)
 			// node with one child
 			if(get_LC(T) == NULL)
 			{
-				free(get_LC(T));
-				set_LC(T, NULL);
+				set_val(T, get_val(get_RC(T)));
+				free(get_RC(T));
+				set_RC(T, NULL);
 			}
 			else
 			{
-				free(get_RC(T));
-				set_RC(T, NULL);
+				set_val(T, get_val(get_LC(T)));
+				free(get_LC(T));
+				set_LC(T, NULL);
 			}
 		}
 		
