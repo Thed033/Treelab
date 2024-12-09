@@ -41,7 +41,7 @@ void print_array(int* a, int size)
 // in a 2-dimensional way
 //-----------------------------------------------------------------------------
 void print_whitespace(int count) {
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count-1; i++) {
         printf(" ");
     }
 }
@@ -50,15 +50,17 @@ void print_whitespace(int count) {
 
 // Function to print the binary tree from the array
 void print_2d(int* a, int maxnodes) {
+	// heigth of tree
     int height  = (log2(maxnodes))+1;
 
-    int index = 0; //array positon
+	//array positon
+    int index = 0; 
 
     for (int level = 0; level < height; level++) {
 
 		// calculate number of nodes at level 
         int nodes_at_level = 1 << level; 
-		//calculate number of spaces
+		// calculate number of spaces
         int spacing = (1 << (height+1 - level)); 
 
         // Print leading spaces
